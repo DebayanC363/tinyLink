@@ -1,7 +1,7 @@
 // src/routes/apiLinks.js
 const express = require("express");
 const router = express.Router();
-const db = require("../db");
+const db = require("../Db");
 const Joi = require("joi");
 const { customAlphabet } = require("nanoid");
 

@@ -1,5 +1,5 @@
 // src/routes/redirect.js
-const db = require("../db");
+const db = require("../Db");
 
 // GET /:code → redirect
 async function redirectHandler(req, res) {
