@@ -1,11 +1,15 @@
-const API = "http://localhost:3000/api/links";
-const BASE = "http://localhost:3000";
+// Your Render backend
+const API_BASE = "https://tinylink-16x7.onrender.com/api/links";
 
+// Your redirect domain (Render domain)
+const BASE = "https://tinylink-16x7.onrender.com";
+
+// Load all links
 async function loadLinks() {
     const table = document.getElementById("linksTable");
     table.innerHTML = "Loading...";
 
-    const res = await fetch(API);
+    const res = await fetch(API_BASE);
     const links = await res.json();
 
     table.innerHTML = "";
@@ -41,13 +45,16 @@ async function loadLinks() {
     });
 }
 
+// Copy short link
 function copyLink(code) {
-    navigator.clipboard.writeText(`${BASE}/${code}`);
-    alert("Copied: " + BASE + "/" + code);
+    const url = `${BASE}/${code}`;
+    navigator.clipboard.writeText(url);
+    alert("Copied: " + url);
 }
 
+// View stats
 async function viewStats(code) {
-    const res = await fetch(`${API}/${code}`);
+    const res = await fetch(`${API_BASE}/${code}`);
     const data = await res.json();
 
     alert(`
@@ -59,13 +66,15 @@ Created: ${data.created_at}
   `);
 }
 
+// Delete link
 async function deleteLink(code) {
     if (!confirm("Delete this link?")) return;
 
-    await fetch(`${API}/${code}`, { method: "DELETE" });
+    await fetch(`${API_BASE}/${code}`, { method: "DELETE" });
     loadLinks();
 }
 
+// Create new link
 document.getElementById("createForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -74,7 +83,7 @@ document.getElementById("createForm").addEventListener("submit", async (e) => {
 
     msg.textContent = "Creating...";
 
-    const res = await fetch(API, {
+    const res = await fetch(API_BASE, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url })
