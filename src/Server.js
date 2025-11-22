@@ -1,4 +1,4 @@
-// src/server.js
+// src/Server.js   <-- CAPITAL S
 
 require("dotenv").config();
 const express = require("express");
@@ -7,7 +7,6 @@ const cors = require("cors");
 const apiLinks = require("./routes/apiLinks");
 const redirect = require("./routes/redirect");
 
-// MUST BE FIRST before app.use()
 const app = express();
 
 // Enable CORS for frontend
@@ -21,7 +20,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve frontend
+// Serve frontend (index.html + Script.js)
 app.use(express.static("public"));
 
 // Health check
@@ -39,6 +38,7 @@ app.get("/code/:code", redirect.statsForCode);
 app.get("/:code", redirect.redirectHandler);
 
 const port = process.env.PORT || 3000;
+
 app.listen(port, () => {
     console.log(`TinyLink server running on port ${port}`);
 });
