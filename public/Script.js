@@ -4,7 +4,7 @@ console.log("LOADING LATEST SCRIPT.JS 🔥🔥🔥");
 // ===============================
 // Backend URL (Render backend)
 // ===============================
-const API_BASE = "https://tinylink-16x7.onrender.com";
+const API_BASE = "https://tinylink-l6x7.onrender.com";
 const API = `${API_BASE}/api/links`;
 
 // Used for Copy button + redirects
