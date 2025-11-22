@@ -1,6 +1,5 @@
 console.log("LOADING LATEST SCRIPT.JS 🔥🔥🔥");
 
-
 // ===============================
 // Backend URL (Render backend)
 // ===============================
@@ -23,6 +22,17 @@ async function loadLinks() {
 
         table.innerHTML = "";
 
+        // EMPTY STATE
+        if (links.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="5" class="p-4 text-center text-gray-500">
+                        No links created yet.
+                    </td>
+                </tr>`;
+            return;
+        }
+
         links.forEach(link => {
             const row = document.createElement("tr");
 
@@ -30,6 +40,8 @@ async function loadLinks() {
                 <td class="p-2 font-mono">${link.code}</td>
                 <td class="p-2 truncate">${link.url}</td>
                 <td class="p-2">${link.total_clicks}</td>
+                <td class="p-2">${link.last_clicked || "—"}</td>
+
                 <td class="p-2 flex gap-2">
 
                     <button class="bg-green-600 text-white px-2 py-1 rounded"
@@ -41,7 +53,6 @@ async function loadLinks() {
                             onclick="window.location.href='code.html?code=${link.code}'">
                         Stats
                     </button>
-
 
                     <button class="bg-red-600 text-white px-2 py-1 rounded"
                             onclick="deleteLink('${link.code}')">
@@ -67,23 +78,6 @@ function copyLink(code) {
     navigator.clipboard.writeText(`${BASE}/${code}`);
     alert("Copied: " + BASE + "/" + code);
 }
-
-// ===============================
-// VIEW STATS
-// ===============================
-async function viewStats(code) {
-    const res = await fetch(`${API}/${code}`);
-    const data = await res.json();
-
-    alert(`
-Code: ${data.code}
-URL: ${data.url}
-Total Clicks: ${data.total_clicks}
-Last Clicked: ${data.last_clicked}
-Created: ${data.created_at}
-    `);
-}
-
 
 // ===============================
 // DELETE LINK
@@ -146,7 +140,6 @@ document.getElementById("createForm").addEventListener("submit", async (e) => {
     btn.disabled = false;
     btn.textContent = "Create Short Link";
 });
-
 
 // ===============================
 // INITIAL LOAD
