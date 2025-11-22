@@ -102,17 +102,29 @@ document.getElementById("createForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const url = document.getElementById("urlInput").value;
-    const customCode = document.getElementById("codeInput").value.trim();
+    const customCode = document.getElementById("codeInput")?.value.trim() || "";
     const msg = document.getElementById("createMsg");
 
-    msg.textContent = "Creating...";
+    const btn = e.submitter;
+    btn.disabled = true;
+    btn.textContent = "Creating...";
+    msg.textContent = "";
+
+    // Simple validation before API call
+    let finalUrl = url.trim();
+    if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
+        msg.textContent = "Please enter a valid URL starting with http:// or https://";
+        btn.disabled = false;
+        btn.textContent = "Create Short Link";
+        return;
+    }
 
     try {
         const res = await fetch(API, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                url,
+                url: finalUrl,
                 code: customCode || undefined
             })
         });
@@ -130,6 +142,9 @@ document.getElementById("createForm").addEventListener("submit", async (e) => {
         msg.textContent = "Error: Could not connect to server.";
         console.error(err);
     }
+
+    btn.disabled = false;
+    btn.textContent = "Create Short Link";
 });
 
 
