@@ -1,4 +1,5 @@
-console.log("Frontend Updated!!! 3");
+console.log("LOADING LATEST SCRIPT.JS 🔥🔥🔥");
+
 
 // ===============================
 // Backend URL (Render backend)
