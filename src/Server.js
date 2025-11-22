@@ -9,8 +9,14 @@ const redirect = require("./routes/redirect");
 
 const app = express();
 
+// Enable CORS for frontend
+app.use(cors({
+    origin: "*",
+    methods: "GET,POST,DELETE",
+    allowedHeaders: "Content-Type"
+}));
+
 // Middlewares
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
