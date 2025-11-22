@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>TinyLink — Link stats</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+<div class="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-xl">
+    <a href="/" class="text-sm text-blue-600 hover:underline">&larr; Back</a>
+    <h1 class="text-2xl font-bold mt-4 mb-4">Link statistics</h1>
+
+    <div id="status" class="text-sm text-gray-600 mb-4">Loading…</div>
+
+    <div id="stats" class="space-y-3 hidden">
+        <div><strong>Code:</strong> <span id="code" class="font-mono"></span></div>
+        <div><strong>URL:</strong> <a id="url" href="#" target="_blank" rel="noopener" class="text-blue-600"></a></div>
+        <div><strong>Total clicks:</strong> <span id="clicks"></span></div>
+        <div><strong>Last clicked:</strong> <span id="last"></span></div>
+        <div><strong>Created:</strong> <span id="created"></span></div>
+    </div>
+
+    <div id="error" class="text-red-600 hidden mt-4"></div>
+</div>
+
+<script>
+    // Parse query param ?code=XXXX
+    function getQueryParam(name) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(name);
+    }
+
+    (async function load() {
+        const code = getQueryParam('code');
+        const statusEl = document.getElementById('status');
+        const statsEl = document.getElementById('stats');
+        const errEl = document.getElementById('error');
+
+        if (!code) {
+            statusEl.textContent = 'No code provided in URL.';
+            errEl.classList.remove('hidden');
+            errEl.textContent = 'Open this page with ?code=YOURCODE';
+            return;
+        }
+
+        statusEl.textContent = 'Loading stats for ' + code + '...';
+
+        try {
+            // NOTE: this uses relative URL to backend (/code/:code) which your
+            // server already returns as JSON per your server routes.
+            const res = await fetch('/code/' + encodeURIComponent(code));
+            if (!res.ok) {
+                const json = await res.json().catch(()=>({}));
+                throw new Error(json.error || res.status + ' ' + res.statusText);
+            }
+            const data = await res.json();
+
+            // Populate
+            document.getElementById('code').textContent = data.code || code;
+            const urlEl = document.getElementById('url');
+            urlEl.textContent = data.url || '';
+            urlEl.href = data.url || '#';
+            document.getElementById('clicks').textContent = data.total_clicks ?? 0;
+            document.getElementById('last').textContent = data.last_clicked || '—';
+            document.getElementById('created').textContent = data.created_at || '—';
+
+            statusEl.classList.add('hidden');
+            statsEl.classList.remove('hidden');
+        } catch (err) {
+            statusEl.classList.add('hidden');
+            errEl.classList.remove('hidden');
+            errEl.textContent = 'Failed to fetch stats: ' + (err.message || err);
+            console.error(err);
+        }
+    })();
+</script>
+</body>
+</html>

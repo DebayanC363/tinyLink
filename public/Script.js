@@ -38,9 +38,10 @@ async function loadLinks() {
                     </button>
 
                     <button class="bg-blue-600 text-white px-2 py-1 rounded"
-                            onclick="viewStats('${link.code}')">
+                            onclick="window.location.href='code.html?code=${link.code}'">
                         Stats
                     </button>
+
 
                     <button class="bg-red-600 text-white px-2 py-1 rounded"
                             onclick="deleteLink('${link.code}')">
@@ -82,6 +83,7 @@ Last Clicked: ${data.last_clicked}
 Created: ${data.created_at}
     `);
 }
+
 
 // ===============================
 // DELETE LINK
