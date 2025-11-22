@@ -14,7 +14,15 @@ const BASE = API_BASE;
 // ===============================
 async function loadLinks() {
     const table = document.getElementById("linksTable");
-    table.innerHTML = "Loading...";
+
+    // Improved loading state
+    table.innerHTML = `
+        <tr>
+            <td colspan="5" class="p-6 text-center text-gray-500 animate-pulse">
+                Loading links…
+            </td>
+        </tr>
+    `;
 
     try {
         const res = await fetch(API);
@@ -26,8 +34,12 @@ async function loadLinks() {
         if (links.length === 0) {
             table.innerHTML = `
                 <tr>
-                    <td colspan="5" class="p-4 text-center text-gray-500">
-                        No links created yet.
+                    <td colspan="5" class="p-6 text-center">
+                        <div class="flex flex-col items-center gap-2 text-gray-500">
+                            <div class="text-4xl">📭</div>
+                            <div class="text-lg font-semibold">No links yet</div>
+                            <div class="text-sm">Start by creating your first short link above.</div>
+                        </div>
                     </td>
                 </tr>`;
             return;
@@ -67,9 +79,18 @@ async function loadLinks() {
 
     } catch (err) {
         console.error("Error loading links:", err);
-        table.innerHTML = "Failed to load links.";
+
+        // Improved error state
+        table.innerHTML = `
+            <tr>
+                <td colspan="5" class="p-6 text-center text-red-600">
+                    Failed to load links. Please try again.
+                </td>
+            </tr>
+        `;
     }
 }
+
 
 // ===============================
 // COPY BUTTON
