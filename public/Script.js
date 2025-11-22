@@ -1,58 +1,74 @@
 console.log("Frontend Updated!!! 3");
 
-// Backend URL
+// ===============================
+// Backend URL (Render backend)
+// ===============================
 const API_BASE = "https://tinylink-16x7.onrender.com";
 const API = `${API_BASE}/api/links`;
 
-// For copy button & redirect links
+// Used for Copy button + redirects
 const BASE = API_BASE;
 
+// ===============================
 // Load all links into the table
+// ===============================
 async function loadLinks() {
     const table = document.getElementById("linksTable");
     table.innerHTML = "Loading...";
 
-    const res = await fetch(API);
-    const links = await res.json();
+    try {
+        const res = await fetch(API);
+        const links = await res.json();
 
-    table.innerHTML = "";
+        table.innerHTML = "";
 
-    links.forEach(link => {
-        const row = document.createElement("tr");
+        links.forEach(link => {
+            const row = document.createElement("tr");
 
-        row.innerHTML = `
-            <td class="p-2 font-mono">${link.code}</td>
-            <td class="p-2 truncate">${link.url}</td>
-            <td class="p-2">${link.total_clicks}</td>
-            <td class="p-2 flex gap-2">
+            row.innerHTML = `
+                <td class="p-2 font-mono">${link.code}</td>
+                <td class="p-2 truncate">${link.url}</td>
+                <td class="p-2">${link.total_clicks}</td>
+                <td class="p-2 flex gap-2">
 
-                <button class="bg-green-600 text-white px-2 py-1 rounded"
-                        onclick="copyLink('${link.code}')">
-                    Copy
-                </button>
+                    <button class="bg-green-600 text-white px-2 py-1 rounded"
+                            onclick="copyLink('${link.code}')">
+                        Copy
+                    </button>
 
-                <button class="bg-blue-600 text-white px-2 py-1 rounded"
-                        onclick="viewStats('${link.code}')">
-                    Stats
-                </button>
+                    <button class="bg-blue-600 text-white px-2 py-1 rounded"
+                            onclick="viewStats('${link.code}')">
+                        Stats
+                    </button>
 
-                <button class="bg-red-600 text-white px-2 py-1 rounded"
-                        onclick="deleteLink('${link.code}')">
-                    Delete
-                </button>
+                    <button class="bg-red-600 text-white px-2 py-1 rounded"
+                            onclick="deleteLink('${link.code}')">
+                        Delete
+                    </button>
 
-            </td>
-        `;
+                </td>
+            `;
 
-        table.appendChild(row);
-    });
+            table.appendChild(row);
+        });
+
+    } catch (err) {
+        console.error("Error loading links:", err);
+        table.innerHTML = "Failed to load links.";
+    }
 }
 
+// ===============================
+// COPY BUTTON
+// ===============================
 function copyLink(code) {
     navigator.clipboard.writeText(`${BASE}/${code}`);
     alert("Copied: " + BASE + "/" + code);
 }
 
+// ===============================
+// VIEW STATS
+// ===============================
 async function viewStats(code) {
     const res = await fetch(`${API}/${code}`);
     const data = await res.json();
@@ -66,6 +82,9 @@ Created: ${data.created_at}
     `);
 }
 
+// ===============================
+// DELETE LINK
+// ===============================
 async function deleteLink(code) {
     if (!confirm("Delete this link?")) return;
 
@@ -73,7 +92,9 @@ async function deleteLink(code) {
     loadLinks();
 }
 
-// Create link
+// ===============================
+// CREATE NEW LINK
+// ===============================
 document.getElementById("createForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -82,21 +103,29 @@ document.getElementById("createForm").addEventListener("submit", async (e) => {
 
     msg.textContent = "Creating...";
 
-    const res = await fetch(API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url })
-    });
+    try {
+        const res = await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url })
+        });
 
-    if (res.status === 201) {
-        msg.textContent = "Link created!";
-        document.getElementById("createForm").reset();
-        loadLinks();
-    } else {
-        const err = await res.json();
-        msg.textContent = "Error: " + err.error;
+        if (res.status === 201) {
+            msg.textContent = "Link created!";
+            document.getElementById("createForm").reset();
+            loadLinks();
+        } else {
+            const err = await res.json();
+            msg.textContent = "Error: " + err.error;
+        }
+
+    } catch (err) {
+        msg.textContent = "Error: Could not connect to server.";
+        console.error(err);
     }
 });
 
-// Initial load
+// ===============================
+// INITIAL LOAD
+// ===============================
 loadLinks();
