@@ -102,6 +102,7 @@ document.getElementById("createForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const url = document.getElementById("urlInput").value;
+    const customCode = document.getElementById("codeInput").value.trim();
     const msg = document.getElementById("createMsg");
 
     msg.textContent = "Creating...";
@@ -110,7 +111,10 @@ document.getElementById("createForm").addEventListener("submit", async (e) => {
         const res = await fetch(API, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ url })
+            body: JSON.stringify({
+                url,
+                code: customCode || undefined
+            })
         });
 
         if (res.status === 201) {
@@ -127,6 +131,7 @@ document.getElementById("createForm").addEventListener("submit", async (e) => {
         console.error(err);
     }
 });
+
 
 // ===============================
 // INITIAL LOAD

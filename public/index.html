@@ -25,6 +25,13 @@
                    class="border p-3 rounded-lg w-full"
                    required />
 
+            <input id="codeInput"
+                   type="text"
+                   placeholder="Custom short code (optional, 6–8 chars)"
+                   class="border p-3 rounded-lg w-full font-mono"
+                   minlength="6"
+                   maxlength="8" />
+
             <button type="submit"
                     class="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg">
                 Create Short Link
@@ -33,6 +40,7 @@
             <p id="createMsg" class="text-sm text-green-600"></p>
         </div>
     </form>
+
 
     <!-- Links Table -->
     <h2 class="text-2xl font-semibold mb-4">All Links</h2>
