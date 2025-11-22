@@ -25,8 +25,16 @@ app.use(express.static("public"));
 
 // Health check
 app.get("/healthz", (req, res) => {
-    res.json({ ok: true });
+    res.json({
+        ok: true,
+        service: "TinyLink URL Shortener",
+        uptime_seconds: process.uptime(),
+        timestamp: new Date().toISOString(),
+        environment: process.env.NODE_ENV || "production",
+        version: "1.0.0"
+    });
 });
+
 
 // API routes
 app.use("/api/links", apiLinks);
